@@ -1,27 +1,33 @@
-import kivy
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.popup import Popup
-from kivy.uix.textinput import TextInput
-from kivy.uix.boxlayout import BoxLayout
+import tkinter as tk
+import random
+from tkinter import messagebox
+import time
 from kivy.uix.gridlayout import GridLayout
 
+class MemoryTile:
+    def __init__(self, parent):
+        self.parent = parent
+        self.buttons = [[tk.Button(root,
+                                   width=20,
+                                   height=10,
+                                   command=lambda row=row, column=column: self.choose_tile(row, column)
+                                   ) for column in range(4)] for row in range(4)]
+        for row in range(4):
+            for column in range(4):
+                self.buttons[row][column].grid(row=row, column=column)
+        self.first = None
+        self.draw_board()
 
-class MyApp(App):
+    def draw_board(self):
 
-    def build(self):
-
-        dena = GridLayout(cols=4,spacing=20)
-
-        A = "/home/euskera/Mahaigaina/Deskargak/erraldoia_00.png"
-        B = "/home/euskera/Mahaigaina/Deskargak/erraldoia_01.png"
-        C = "/home/euskera/Mahaigaina/Deskargak/erraldoia_02.png"
-        D = "/home/euskera/Mahaigaina/Deskargak/erraldoia_03.png"
-        C = "/home/euskera/Mahaigaina/Deskargak/erraldoia_05.png"
-        D = "/home/euskera/Mahaigaina/Deskargak/erraldoia_06.png"
-        E = "/home/euskera/Mahaigaina/Deskargak/erraldoia_07.png"
-        F = "/home/euskera/Mahaigaina/Deskargak/erraldoia_08.png"
+        #A = "/home/euskera/Mahaigaina/Deskargak/erraldoia_00.png"
+        #B = "/home/euskera/Mahaigaina/Deskargak/erraldoia_01.png"
+        #C = "/home/euskera/Mahaigaina/Deskargak/erraldoia_02.png"
+        #D = "/home/euskera/Mahaigaina/Deskargak/erraldoia_03.png"
+        #C = "/home/euskera/Mahaigaina/Deskargak/erraldoia_05.png"
+        #D = "/home/euskera/Mahaigaina/Deskargak/erraldoia_06.png"
+        #E = "/home/euskera/Mahaigaina/Deskargak/erraldoia_07.png"
+        #F = "/home/euskera/Mahaigaina/Deskargak/erraldoia_08.png"
 
         self.answer = (A,A,B,B,C,C,D,D,E,E,F,F)
         random.shuffle(self.answer)
@@ -29,42 +35,33 @@ class MyApp(App):
                        self.answer[4:8],
                        self.answer[8:12],
                        self.answer[12:]]
-        for row in self.answer:
-            for irudia in row:
-               btn1 = Button(text="harria")
-               btn1.bind(on_press=self.jokatu)
+        for row in self.buttons:
+            for button in row:
+                button.config(text='', state=tk.NORMAL)
         self.start_time = time.monotonic()
 
+    def choose_tile(self, row, column):
+        self.buttons[row][column].config(text=self.answer[row][column])
+        self.buttons[row][column].config(state=tk.DISABLED)
+        if not self.first:
+            self.first = (row, column)
+        else:
+            a,b = self.first
+            if self.answer[row][column] == self.answer[a][b]:
+                self.answer[row][column] = ''
+                self.answer[a][b] = ''
+                if not any(''.join(row) for row in self.answer):
+                    duration = time.monotonic() - self.start_time
+                    messagebox.showinfo(title='Success!', message='Irabazi duzu! Denbora: {:.1f}'.format(duration))
+                    self.parent.after(1000, self.draw_board)
+            else:
+                self.parent.after(800, self.hide_tiles, row, column, a, b)
+            self.first = None
 
-        btn1 = Button(text="harria")
-        btn1.bind(on_press=self.jokatu)
+    def hide_tiles(self, x1, y1, x2, y2):
+        self.buttons[x1][y1].config(text='', state=tk.NORMAL)
+        self.buttons[x2][y2].config(text='', state=tk.NORMAL)
 
-        btn2 = Button(text="papera")
-        btn2.bind(on_press=self.jokatu)
-
-        btn3 = Button(text="guraizeak")
-        btn3.bind(on_press=self.jokatu)
-
-        btn4 = Button(text="muskerra")
-        btn4.bind(on_press=self.jokatu)
-
-        btn5 = Button(text="Spock")
-        btn5.bind(on_press=self.jokatu)
-
-        dena.add_widget(btn1)
-        dena.add_widget(btn2)
-        dena.add_widget(btn3)
-        dena.add_widget(btn4)
-        dena.add_widget(btn5)
-        return dena
-
-    def jokatu(self, botoia):
-        aukera = botoia.text
-        popup = Popup(title="Irabazlea",
-            content=Label(text= ", ordenagailuak  aukeratu duelako "),
-            size_hint=(None, None), size=(400, 400))
-        popup.open()
-
-
-if __name__ == '__main__':
-    MyApp().run()
+root = tk.Tk()
+memory_tile = MemoryTile(root)
+root.mainloop()
