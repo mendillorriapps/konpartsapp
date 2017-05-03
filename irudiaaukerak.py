@@ -8,16 +8,20 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
-from random import shuffle,randint
+from random import shuffle,randint,sample
 import csv
+import random
+from kivy.uix.screenmanager import Screen
+
+class irudiaaukerak(Screen):
+    def itxi(self,botoia):
+        self.manager.current="menu"
 
 
-
-class MyApp(App):
-    def build(self):
+    def __init__(self):
 
 
-        layout1 = GridLayout(cols=3)
+        layout1 = GridLayout(cols=4)
         layout1.add_widget(Label(text=""))
         self.irudia=Image()
         layout1.add_widget(self.irudia)
@@ -25,9 +29,16 @@ class MyApp(App):
 
         layout = GridLayout(cols=2,spacing=20)
         self.btn1 = Button()
+        self.btn1.background_normal="botoia.png"
         self.btn2 = Button()
+        self.btn2.background_normal="botoia.png"
+
         self.btn3 = Button()
+        self.btn3.background_normal="botoia.png"
+
         self.btn4 = Button()
+        self.btn4.background_normal="botoia.png"
+
 
         self.btn1.bind(on_press=self.egiaztatu)
         layout.add_widget(self.btn1)
@@ -45,41 +56,52 @@ class MyApp(App):
         layout.add_widget(self.btn4)
 
 
+
         layout2= BoxLayout(orientation="vertical")
         layout2.add_widget(layout1)
         layout2.add_widget(layout)
 
         self.kargatu()
 
-        return layout2
+        btn5 = Button(text="atzera")
+        btn5.size_hint_y=0.2
+        btn5.size_hint_x=0.3
+        btn5.bind(on_press=self.itxi)
+
+
+
+        layout2.add_widget(btn5)
+
+
+        self.add_widget(layout2)
 
     def kargatu (self):
         erraldoiak = self.irakurri()
-        self.irudiona= list(erraldoiak.keys())[randint(0,len(erraldoiak.keys()))]
-        irudia="/home/euskera/Mahaigaina/Dokumentuak/Amaia/Argazkiak/"+self.irudiona
+        erraldoizenak=list(erraldoiak.keys())
+        hautatutakoak=sample(erraldoizenak,4)
+        self.irudiona= hautatutakoak[0]
+        irudia="Argazkiak/"+self.irudiona
         self.izena=erraldoiak[self.irudiona]["izena_eu"]
-        self.izenak=list([self.izena,"Josepamunda","TokoToko","Braulia"])
-        shuffle(self.izenak)
-        self.irudia.source=irudia
 
-        self.btn1.text=self.izenak[0]
-        self.btn2.text=self.izenak[1]
-        self.btn3.text=self.izenak[2]
-        self.btn4.text=self.izenak[3]
+        self.irudia.source=irudia
+        izenak=[self.izena,erraldoiak[hautatutakoak[1]]["izena_eu"],erraldoiak[hautatutakoak[2]]["izena_eu"],erraldoiak[hautatutakoak[3]]["izena_eu"]]
+        shuffle(izenak)
+        self.btn1.text=izenak[0]
+        self.btn2.text=izenak[1]
+        self.btn3.text=izenak[2]
+        self.btn4.text=izenak[3]
 
     def egiaztatu(self,botoia):
         if self.izena == botoia.text:
-            print ("ongi.png")
             self.kargatu()
             return True
 
         else:
-            print("okerra.png")
             return False
 
     def irakurri(self):
         erraldoiak={}
-        with open('/home/euskera/Mahaigaina/Dokumentuak/Amaia/erraldoiak.csv') as fin:
+        with open('erraldoiak.csv') as fin:
             reader=csv.reader(fin, skipinitialspace=True, quotechar="'")
             for row in reader:
                 erraldoia = {}
@@ -92,6 +114,3 @@ class MyApp(App):
                 erraldoiak[row[0]]=erraldoia
 
         return erraldoiak
-
-if __name__=="__main__":
-    MyApp().run()
