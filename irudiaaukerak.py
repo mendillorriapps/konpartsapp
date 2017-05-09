@@ -20,6 +20,7 @@ class irudiaaukerak(Screen):
 
 
     def __init__(self):
+        super(irudiaaukerak, self).__init__()
         self.izena="irudiaaukerak"
 
         layout1 = GridLayout(cols=4)

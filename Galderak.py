@@ -12,6 +12,8 @@ import csv
 class Galderak(Screen):
 
     def __init__(self):
+        super(Galderak, self).__init__()
+        self.name = "galderak"
         galderaGauzak = self.galderaG()
 
         self.layout = BoxLayout(orientation='vertical')
@@ -68,13 +70,13 @@ class Galderak(Screen):
         self.layout.add_widget(ErantzunakL)
         self.layout.add_widget(atzera)
 
-        with layout2.canvas.before:
+        with self.layout.canvas.before:
                 Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
-                self.rect = Rectangle(source="atzekoirudia.png",size=layout2.size,
-                            pos=layout2.pos)
+                self.rect = Rectangle(source="atzekoirudia.png",size=self.layout.size,
+                            pos=self.layout.pos)
 
 
-        layout2.bind(pos=self.update_rect, size=self.update_rect)
+        self.layout.bind(pos=self.update_rect, size=self.update_rect)
 
         self.add_widget(self.layout)
 
@@ -92,7 +94,7 @@ class Galderak(Screen):
             reader=csv.reader(fin, skipinitialspace=True, quotechar="'")
             for row in reader:
                 galdera = [row[0],[row[1],row[2],row[3],row[4]],row[1]]
-                self.galderaGuztiak.append[galdera]
+                self.galderaGuztiak.append(galdera)
         zein = randrange(len(self.galderaGuztiak))
 
 
