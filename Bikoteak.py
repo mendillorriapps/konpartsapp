@@ -14,11 +14,21 @@ from kivy.uix.screenmanager import Screen
 
 class Bikoteak(Screen):
 
+
     def __init__(self):
+        self.name="Bikoteak"
 
 
 
         dena = BoxLayout (orientation="vertical")
+
+
+        with layout.canvas.before:
+                Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
+                self.rect = Rectangle(source="background.jpg",size=layout.size,
+                            pos=layout.pos)
+        layout.bind(pos=self.update_rect, size=self.update_rect)
+
         self.fitxak = GridLayout(cols=4,spacing=20)
         dena.add_widget(self.fitxak)
         self.buelta = "Argazkiak/buelta.jpg"
@@ -38,6 +48,7 @@ class Bikoteak(Screen):
         btn2.width=100
         btn2.bind(on_press=self.atzera)
         botoiak.add_widget(btn2)
+        botoia.background_normal='button (7).png'
 
 
         btn3 = Button(text= "jokatu berriz")
@@ -45,7 +56,7 @@ class Bikoteak(Screen):
         btn3.width=100
         btn3.bind(on_press=self.jokatuberriz)
         botoiak.add_widget(btn3)
-
+        botoia.background_normal='botoia.png'
         dena.add_widget(botoiak)
 
         return self.add_widget(dena)
@@ -115,3 +126,4 @@ class Bikoteak(Screen):
             self.lehenengoa=None
             if len(self.asmatutakoak)== 12:
                 print ("irabazi")
+
