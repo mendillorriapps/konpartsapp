@@ -1,4 +1,3 @@
-#from kivy.uix.canvas import Canvas
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.app import App
@@ -14,12 +13,13 @@ import random
 from kivy.uix.screenmanager import Screen
 
 class irudiaaukerak(Screen):
+
     def itxi(self,botoia):
         self.manager.current="menu"
 
 
     def __init__(self):
-
+        self.izena="irudiaaukerak"
 
         layout1 = GridLayout(cols=4)
         layout1.add_widget(Label(text=""))
@@ -30,6 +30,7 @@ class irudiaaukerak(Screen):
         layout = GridLayout(cols=2,spacing=20)
         self.btn1 = Button()
         self.btn1.background_normal="botoia.png"
+
         self.btn2 = Button()
         self.btn2.background_normal="botoia.png"
 
@@ -68,12 +69,22 @@ class irudiaaukerak(Screen):
         btn5.size_hint_x=0.3
         btn5.bind(on_press=self.itxi)
 
+        with layout2.canvas.before:
+                Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
+                self.rect = Rectangle(source="atzekoirudia.png",size=layout2.size,
+                            pos=layout2.pos)
 
+
+        layout2.bind(pos=self.update_rect, size=self.update_rect)
 
         layout2.add_widget(btn5)
 
 
         self.add_widget(layout2)
+
+    def update_rect(self,instance,value):
+            self.rect.pos = instance.pos
+            self.rect.size = instance.size
 
     def kargatu (self):
         erraldoiak = self.irakurri()
