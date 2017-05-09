@@ -11,6 +11,7 @@ from random import shuffle,randint,sample
 import csv
 import random
 from kivy.uix.screenmanager import Screen
+from kivy.graphics import Rectangle, Color
 
 class irudiaaukerak(Screen):
 
