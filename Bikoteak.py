@@ -20,8 +20,6 @@ class Bikoteak(Screen):
         super(Bikoteak, self).__init__()
         self.name="Bikoteak"
 
-
-
         dena = BoxLayout (orientation="vertical")
 
 
@@ -62,6 +60,10 @@ class Bikoteak(Screen):
         dena.add_widget(botoiak)
 
         return self.add_widget(dena)
+
+    def update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
 
     def atzera (self,botoia):
         self.manager.current = "menu"

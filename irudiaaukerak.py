@@ -15,13 +15,9 @@ from kivy.graphics import Rectangle, Color
 
 class irudiaaukerak(Screen):
 
-    def itxi(self,botoia):
-        self.manager.current="menu"
-
-
     def __init__(self):
         super(irudiaaukerak, self).__init__()
-        self.izena="irudiaaukerak"
+        self.name="irudiaaukerak"
 
         layout1 = GridLayout(cols=4)
         layout1.add_widget(Label(text=""))
@@ -67,6 +63,7 @@ class irudiaaukerak(Screen):
         self.kargatu()
 
         btn5 = Button(text="atzera")
+        btn5.background_normal='atzera.png'
         btn5.size_hint_y=0.2
         btn5.size_hint_x=0.3
         btn5.bind(on_press=self.itxi)
@@ -87,6 +84,11 @@ class irudiaaukerak(Screen):
     def update_rect(self,instance,value):
             self.rect.pos = instance.pos
             self.rect.size = instance.size
+
+
+    def itxi(self,botoia):
+        self.manager.current="menu"
+
 
     def kargatu (self):
         erraldoiak = self.irakurri()
