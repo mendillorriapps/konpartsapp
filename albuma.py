@@ -18,53 +18,77 @@ import csv
 
 from Galderak import Galderak
 from irudiaaukerak import irudiaaukerak
+from Bikoteak import Bikoteak
+
+from kivy.metrics import dp
+from kivy.core.window import Window
+from kivy import platform
 
 
 HERRIA = ''
 
 
 class menu(Screen):
-    def __init__(self,herriak=[],mota=''):
+    def __init__(self):
         super(menu, self).__init__()
 
-        self.name = "menu"
+        self.name = 'menu'
 
-        layout = BoxLayout(orientation='vertical')
+        layout = GridLayout(cols=2,spacing=75,padding=[75,75,75,75])
         albuma = Button(text='Albuma')
+        albuma.background_normal = "botoia.png"
         layout.add_widget(albuma)
         albuma.bind(on_press=self.albumera)
 
         bikoteak = Button(text='Bikoteak')
+        bikoteak.background_normal = "botoia.png"
         layout.add_widget(bikoteak)
         bikoteak.bind(on_press=self.bikoteetara)
 
         galderak = Button(text='Galderak')
+        galderak.background_normal = "botoia.png"
         layout.add_widget(galderak)
         galderak.bind(on_press=self.galderetara)
 
         izenak = Button(text='Izenak')
+        izenak.background_normal = "botoia.png"
         layout.add_widget(izenak)
         izenak.bind(on_press=self.izenetara)
+        with layout.canvas.before:
+                Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
+                self.rect = Rectangle(source='atzekoirudia.png',size=layout.size,
+                        pos=layout.pos)
+        layout.bind(pos=self.update_rect, size=self.update_rect)
 
         self.add_widget(layout)
 
     def albumera(self,b):
-        self.manager.current = "HerriaAukeratu"
+        self.manager.current = 'HerriaAukeratu'
     def bikoteetara(self,b):
-        self.manager.current = "Bikoteak"
+        self.manager.current = 'Bikoteak'
     def galderetara(self,b):
-        self.manager.current = "galderak"
+        self.manager.current = 'galderak'
     def izenetara(self,b):
-        self.manager.current = "irudiaaukerak"
+        self.manager.current = 'irudiaaukerak'
+    def update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
 
 
 class HerriaAukeratu(Screen):
 
-    def __init__(self,herriak=[],mota=''):
+    def __init__(self,herriak=[]):
         super(HerriaAukeratu, self).__init__()
         self.herriak = herriak
         self.name = 'HerriaAukeratu'
-        self.mota = mota
+
+        if platform != "android" and platform != "ios":
+            self.mota = "desktop"
+        elif Window.width >= dp(600) and Window.height >= dp(600):
+            self.mota = "tablet"
+        else:
+            self.mota = "mobile"
+
         if self.mota == 'mobile':
             #layout =BoxLayout(orientation="vertical")#GridLayout(cols=1,spacing=10,size_hint_y=None)
             layout = GridLayout(cols=1,spacing=10,size_hint_y=None)
@@ -76,23 +100,35 @@ class HerriaAukeratu(Screen):
             bot = Button()
             bot.text = herria
             bot.size_hint_y = None
+            bot.background_normal = "botoia.png"
             bot.bind(on_press=self.albumera)
             layout.add_widget(bot)
 
-        #atzera = Button(tex='Atzera')
-        #atzera.bind(on_press=self.switch_prev)
+        atzera = Button(text='Atzera')
+        atzera.background_normal='atzera.png'
+        atzera.size_hint_y = None
+        atzera.bind(on_press=self.switch_prev)
+        layout.add_widget(atzera)
 
         with layout.canvas.before:
                 Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
-                self.rect = Rectangle(source="/home/euskera/Mahaigaina/Dokumentuak/perro-clonado-5.gif",size=layout.size,
+                self.rect = Rectangle(source='atzekoirudia.png',size=layout.size,
                         pos=layout.pos)
         layout.bind(pos=self.update_rect, size=self.update_rect)
 
         root = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
         root.add_widget(layout)
 
+        #lnagusia = BoxLayout(orientation='vertical')
+        #lnagusia.add_widget(root)
+        #atzera = Button(text='Atzera')
+        #atzera.background_normal='atzera.png'
+        #atzera.bind(on_press=self.switch_prev)
+        #lnagusia.add_widget(atzera)
+        #self.add_widget(lnagusia)
 
         self.add_widget(root)
+
     def update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
@@ -101,8 +137,8 @@ class HerriaAukeratu(Screen):
              self.manager.get_screen('Albuma').herria(botoia.text,botoia.text,botoia.text,self.mota)
              self.manager.current = 'Albuma'
 
-    #def switch_prev(self, *args):
-        #self.manager.current = 'menu'
+    def switch_prev(self, *args):
+        self.manager.current = 'menu'
 
 
 class Albuma(Screen):
@@ -110,6 +146,13 @@ class Albuma(Screen):
     def __init__(self,mota='', **kwargs):
         super(Albuma, self).__init__(**kwargs)
         self.name = 'Albuma'
+
+        if platform != "android" and platform != "ios":
+            mota = "desktop"
+        elif Window.width >= dp(600) and Window.height >= dp(600):
+            mota = "tablet"
+        else:
+            mota = "mobile"
 
         if mota != 'mobile':
             layout = BoxLayout(orientation='vertical')
@@ -137,6 +180,7 @@ class Albuma(Screen):
             layout4 = BoxLayout(orientation='horizontal',size_hint_y = 0.15)
             layout.add_widget(layout4)
             atzera = Button(text='Atzera')
+            atzera.background_normal='atzera.png'
             layout4.add_widget(atzera)
             atzera.bind(on_press=self.switch_prev)
             layout4.add_widget(Label(text=''))
@@ -161,7 +205,7 @@ class Albuma(Screen):
 
         with layout.canvas.before:
                 Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
-                self.rect = Rectangle(source="/home/euskera/Mahaigaina/Dokumentuak/perro-clonado-5.gif",size=layout.size,
+                self.rect = Rectangle(source='atzekoirudia.png',size=layout.size,
                     pos=layout.pos)
         layout.bind(pos=self.update_rect, size=self.update_rect)
 
@@ -172,14 +216,20 @@ class Albuma(Screen):
 
     def herria(self,herria,azalpena1,azalpena2,mota):
         self.herrial.text = herria
-        self.irudia1.source = '/home/euskera/Mahaigaina/Dokumentuak/Balon mundial.jpg'
+        self.irudia1.source = self.manager.erraldoiak[herria]['irudia2']
 
-        if mota != 'mobile':
-            self.azalpena.text = azalpena1 + azalpena2
+        if platform != "android" and platform != "ios":
+            mota = "desktop"
+        elif Window.width >= dp(600) and Window.height >= dp(600):
+            mota = "tablet"
         else:
-            self.azalpena1.text = self.manager.erraldoiak[herria]["testua1_eu"]
-            self.azalpena2.text = self.manager.erraldoiak[herria]["testua2_eu"]
-            self.irudia2.source = self.manager.erraldoiak[herria]["irudia1"]
+            mota = "mobile"
+        if mota != 'mobile':
+            self.azalpena1.text = azalpena1 + azalpena2
+        else:
+            self.azalpena1.text = self.manager.erraldoiak[herria]['testua1_eu']
+            self.azalpena2.text = self.manager.erraldoiak[herria]['testua2_eu']
+            self.irudia2.source = self.manager.erraldoiak[herria]['irudia1']
 
     def switch_prev(self, *args):
         self.manager.current = 'HerriaAukeratu'
@@ -193,17 +243,18 @@ class MyApp(App):
         self.erraldoiak = {}
         with open('erraldoiaktestuak.csv') as fin:
             reader=csv.reader(fin, skipinitialspace=True, quotechar="'")
+            next(reader)
             for row in reader:
                 print(row)
                 erraldoia = {}
-                erraldoia ["herria_es"] = row[0]
-                erraldoia ["herria_eu"] = row[1]
-                erraldoia ["testua1_es"] = row[2]
-                erraldoia ["testua2_es"] = row[3]
-                erraldoia ["testua1_eu"] = row[4]
-                erraldoia ["testua2_eu"] = row[5]
-                erraldoia ["irudia1"] = row[6]
-                erraldoia ["irudia2"] = row[7]
+                erraldoia ['herria_es'] = row[0]
+                erraldoia ['herria_eu'] = row[1]
+                erraldoia ['testua1_es'] = row[2]
+                erraldoia ['testua2_es'] = row[3]
+                erraldoia ['testua1_eu'] = row[4]
+                erraldoia ['testua2_eu'] = row[5]
+                erraldoia ['irudia1'] = row[6]
+                erraldoia ['irudia2'] = row[7]
 
 
                 self.erraldoiak[row[0]]=erraldoia
@@ -212,13 +263,12 @@ class MyApp(App):
     def build(self):
         root = ScreenManager()
 
-        DEVICE_TYPE = 'mobile'
-
         root.add_widget(menu())
-        root.add_widget(HerriaAukeratu(self.herriak,DEVICE_TYPE))
+        root.add_widget(HerriaAukeratu(self.herriak))
         root.add_widget(Albuma())
         root.add_widget(Galderak())
         root.add_widget(irudiaaukerak())
+        root.add_widget(Bikoteak())
 
         root.erraldoiak = self.erraldoiak
         root.current = 'menu'
