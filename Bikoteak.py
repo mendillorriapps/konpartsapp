@@ -7,15 +7,17 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 import random
+import csv
 from kivy.uix.screenmanager import Screen
-
-
+from kivy.graphics import Rectangle, Color
+from kivy.uix.popup import Popup
 
 
 class Bikoteak(Screen):
 
 
     def __init__(self):
+        super(Bikoteak, self).__init__()
         self.name="Bikoteak"
 
 
@@ -23,11 +25,11 @@ class Bikoteak(Screen):
         dena = BoxLayout (orientation="vertical")
 
 
-        with layout.canvas.before:
+        with dena.canvas.before:
                 Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
-                self.rect = Rectangle(source="background.jpg",size=layout.size,
-                            pos=layout.pos)
-        layout.bind(pos=self.update_rect, size=self.update_rect)
+                self.rect = Rectangle(source="background.jpg",size=dena.size,
+                            pos=dena.pos)
+        dena.bind(pos=self.update_rect, size=self.update_rect)
 
         self.fitxak = GridLayout(cols=4,spacing=20)
         dena.add_widget(self.fitxak)
@@ -48,7 +50,7 @@ class Bikoteak(Screen):
         btn2.width=100
         btn2.bind(on_press=self.atzera)
         botoiak.add_widget(btn2)
-        botoia.background_normal='button (7).png'
+        btn2.background_normal='atzera.png'
 
 
         btn3 = Button(text= "jokatu berriz")
@@ -56,7 +58,7 @@ class Bikoteak(Screen):
         btn3.width=100
         btn3.bind(on_press=self.jokatuberriz)
         botoiak.add_widget(btn3)
-        botoia.background_normal='botoia.png'
+        btn3.background_normal='botoia.png'
         dena.add_widget(botoiak)
 
         return self.add_widget(dena)
@@ -87,7 +89,7 @@ class Bikoteak(Screen):
 
         erraldoiak = self.irakurri()
         erraldoizenak=list(erraldoiak.keys())
-        hautatutakoak=sample(erraldoizenak,8)
+        hautatutakoak=random.sample(erraldoizenak,8)
 
         A = "Argazkiak/" + hautatutakoak[0]
         B = "Argazkiak/" + hautatutakoak[1]
@@ -125,5 +127,8 @@ class Bikoteak(Screen):
                 self.asmatutakoak.append(self.lehenengoa)
             self.lehenengoa=None
             if len(self.asmatutakoak)== 12:
-                print ("irabazi")
+                popup = Popup(title='',
+                content="irabazi duzu!",
+                size_hint=(None, None), size=(400, 400))
+                popup.open()
 
