@@ -67,7 +67,7 @@ class menu(Screen):
     def bikoteetara(self,b):
         self.manager.current = 'Bikoteak'
     def galderetara(self,b):
-        self.manager.current = 'galderak'
+        self.manager.current = 'Galderak'
     def izenetara(self,b):
         self.manager.current = 'irudiaaukerak'
     def update_rect(self, instance, value):
