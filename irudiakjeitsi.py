@@ -3,7 +3,7 @@ import requests
 izenak=["Pamplona","mendillorri"]
 for izena in izenak:
     data={}
-    with open('/home/euskera/Mahaigaina/Dokumentuak/JULEN/konpartsapp/parametroak.csv') as fin:
+    with open('parametroak.csv') as fin:
         reader=csv.reader(fin, skipinitialspace=True, quotechar="'")
         for row in reader:
             data[row[0]]=row[1]

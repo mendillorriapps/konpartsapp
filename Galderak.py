@@ -1,4 +1,5 @@
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from functools import partial
 from kivy.app import App
 from kivy.uix.button import Button
@@ -13,15 +14,58 @@ class Galderak(Screen):
 
     def __init__(self):
         super(Galderak, self).__init__()
-        self.name = "galderak"
-        galderaGauzak = self.galderaG()
+        self.name = "Galderak"
 
-        self.layout = BoxLayout(orientation='vertical')
+        mota = ""
+        self.layout = BoxLayout(orientation="vertical")
+        if mota == "mobile":
+           botoiak = GridLayout(cols=1,spacing=20)
+        else:
+            botoiak = GridLayout(cols=2,spacing=20)
         atzera = BoxLayout(orientation='vertical')
         atzera.size_hint_y=0.2
-        ErantzunakL = BoxLayout(orientation='vertical')
+
+        btnatzera = Button(text="Atzera")
+        btnatzera.bind(on_press=self.atzera)
+        self.btna = Button()
+        self.btnb = Button()
+        self.btnc = Button()
+        self.btnd = Button()
+
+        self.btna.bind(on_press=self.erantzunaF)
+        self.btnb.bind(on_press=self.erantzunaF)
+        self.btnc.bind(on_press=self.erantzunaF)
+        self.btnd.bind(on_press=self.erantzunaF)
+
+        self.galderaL = Label()
+
+        botoiak.add_widget(self.btna)
+        botoiak.add_widget(self.btnb)
+        botoiak.add_widget(self.btnc)
+        botoiak.add_widget(self.btnd)
+
+        atzera.add_widget(Label())
+        atzera.add_widget(btnatzera)
+        self.kargatu()
+
+        self.layout.add_widget(self.galderaL)
+        self.layout.add_widget(botoiak)
+        self.layout.add_widget(atzera)
+
+        with self.layout.canvas.before:
+                Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
+                self.rect = Rectangle(source="atzekoirudia.png",size=self.layout.size,
+                            pos=self.layout.pos)
 
 
+        self.layout.bind(pos=self.update_rect, size=self.update_rect)
+
+        self.add_widget(self.layout)
+
+
+
+    def kargatu(self,p = None):
+        galderaGauzak = self.galderaG()
         list03 = [0, 1, 2, 3]
 
         a = list03[randrange(len(list03))]
@@ -36,49 +80,21 @@ class Galderak(Screen):
         d = list03[randrange(len(list03))]
         list03.remove(d)
 
-        btnatzera = Button(text="Atzera")
-        btnatzera.bind(on_press=self.atzera)
+        self.btna.text=galderaGauzak[1][a]
+        self.btna.background_normal = "botoia.png"
+        self.btna.background_color = (1, 1, 1, 1)
+        self.btnb.text=galderaGauzak[1][b]
+        self.btnb.background_normal = "botoia.png"
+        self.btnb.background_color = (1, 1, 1, 1)
+        self.btnc.text=galderaGauzak[1][c]
+        self.btnc.background_normal = "botoia.png"
+        self.btnc.background_color = (1, 1, 1, 1)
+        self.btnd.text=galderaGauzak[1][d]
+        self.btnd.background_normal = "botoia.png"
+        self.btnd.background_color = (1, 1, 1, 1)
 
-        self.btna = Button(text=galderaGauzak[1][a])
-        self.btnb = Button(text=galderaGauzak[1][b])
-        self.btnc = Button(text=galderaGauzak[1][c])
-        self.btnd = Button(text=galderaGauzak[1][d])
-
-        buttoncallbacka = partial(self.erantzunaF,self.btna,galderaGauzak[2])
-        buttoncallbackb = partial(self.erantzunaF,self.btnb,galderaGauzak[2])
-        buttoncallbackc = partial(self.erantzunaF,self.btnc,galderaGauzak[2])
-        buttoncallbackd = partial(self.erantzunaF,self.btnd,galderaGauzak[2])
-
-
-        self.btna.bind(on_press=buttoncallbacka)
-        self.btnb.bind(on_press=buttoncallbackb)
-        self.btnc.bind(on_press=buttoncallbackc)
-        self.btnd.bind(on_press=buttoncallbackd)
-
-        galderaL = Label(text=galderaGauzak[0])
-
-        ErantzunakL.add_widget(self.btna)
-        ErantzunakL.add_widget(self.btnb)
-        ErantzunakL.add_widget(self.btnc)
-        ErantzunakL.add_widget(self.btnd)
-
-        atzera.add_widget(Label())
-        atzera.add_widget(btnatzera)
-
-
-        self.layout.add_widget(galderaL)
-        self.layout.add_widget(ErantzunakL)
-        self.layout.add_widget(atzera)
-
-        with self.layout.canvas.before:
-                Color(0.5, 0, 0.5, 1) # colors range from 0-1 instead of 0-255
-                self.rect = Rectangle(source="atzekoirudia.png",size=self.layout.size,
-                            pos=self.layout.pos)
-
-
-        self.layout.bind(pos=self.update_rect, size=self.update_rect)
-
-        self.add_widget(self.layout)
+        self.galderaL.text=galderaGauzak[0]
+        self.zuzena = galderaGauzak[2]
 
     def update_rect(self,instance,value):
             self.rect.pos = instance.pos
@@ -99,24 +115,24 @@ class Galderak(Screen):
 
 
         return self.galderaGuztiak[zein]
-    def erantzunaF(self,ze,be,ins):
-        if(ze.text==be):
+
+    def erantzunaF(self,ze):
+        if(ze.text==self.zuzena):
             ze.background_color = (0.0, 1.5, 0.0, 1.0)
-            content = Button(text='Oso ongi asmatu duzu!')
+            content = Button(text='Oso ongi asmatu duzu!',background_color=(0.0, 1.5, 0.0, 1.0))
             self.popup = Popup(title='',
             content=content,
-            size_hint=(None, None), size=(400, 400))
-            content.bind(on_press=self.rebuild)
+            size_hint=(None, None), size=(400, 200))
+            content.bind(on_press=self.komodin,on_dismiss = self.kargatu)
             self.popup.open()
         else:
             ze.background_color = (1.5, 0.0, 0.0, 1.0)
-            content = Button(text='Ez duzu asmatu')
+            content = Button(text='Ez duzu asmatu',background_color=(1.5, 0.0, 0.0, 1.0))
             self.popup = Popup(title='',
             content=content,
-            size_hint=(None, None), size=(400, 400))
-            content.bind(on_press=self.rebuild,on_dismiss = self.rebuild)
+            size_hint=(None, None), size=(400, 200))
+            content.bind(on_press=self.komodin,on_dismiss = self.kargatu)
             self.popup.open()
-    def rebuild(self,ins):
+    def komodin(self,but):
+        self.kargatu(but)
         self.popup.dismiss()
-        self.layout.clear_widgets()
-        return Galderak().run()
